@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Courses</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function getData() {
+
+            console.log('getting data...');
+
+            // Get data from backend.
+            $.ajax({
+                url: 'http://localhost:8080/api/courses/all',
+                type: 'get',
+                success: function(data) {
+                    console.log('data get success');
+                    console.log(data);
+
+                    $('#courses').text('');
+
+                    var coursesText = 'These are all the courses: ';
+
+                    // Loop over data.
+                    $.each(data, function(index, value) {
+                        console.log(value.title + ' - ' + value.author);
+                        coursesText = courses + ' ' + value.title + ' - ' + value.author + '. ';
+                    });
+
+                    $('#courses').text(coursesText);
+                }
+            });
+
+        }
+
+        function postData() {
+
+            console.log("posting data...");
+
+            // Check if title and author are not empty.
+            if(!$("#inputTitle").val() || !$("#inputAuthor").val()) {
+                // No value.
+                console.log("input has no value");
+                $("#error").text("Some or all input fields have no value!");
+            }
+            else {
+                $("#error").text("");
+
+                var titleFromInput = $("#inputTitle").val();
+                var authorFromInput = $("#inputAuthor").val();
+                console.log('Title ingevoerd: ' + titleFromInput);
+                console.log('Author ingevoerd: ' + authorFromInput);
+
+                // JavaScript/JQuery data to JSON.
+
+                // JavaScript variables to JavaScript Object.
+                var courses = {
+                    title : titleFromInput,
+                    author : authorFromInput
+                };
+                console.log(book);
+
+                // JavaScript Object to JSON String.
+                var coursesJson = JSON.stringify(courses);
+                console.log(coursesJson);
+
+                // Do POST request with body.
+                $.ajax({
+                    url: 'http://localhost:8080/api/books/new',
+                    type: 'put',
+                    data: coursesJson,
+                    contentType: "application/json",
+                    success: function(data) {
+                        console.log('data post success');
+                        getData();
+                        // Reset form.
+                        $("#inputTitle").val('');
+                        $("#inputAuthor").val('');
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            // Do these things when the webpage is loaded.
+            getData();
+        });
+
+    </script>
+</head>
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+
+<h2>Avaliable Courses</h2>
+<br>
+
+<table>
+    <tr>
+        <th>Course Level</th>
+        <th>Course Name</th>
+        <th>Course Instructor</th>
+    </tr>
+    <tr>
+        <td>Java Basic</td>
+        <td>Niveau 100</td>
+        <td>Jan de Vries</td>
+    </tr>
+    <tr>
+        <td>Java Advanced</td>
+        <td>Niveau 200</td>
+        <td>Bas de Hoop</td>
+    </tr>
+
+<br> <br>
+
+
+</table>
+<label for="inputTitle">Title of Book</label></br>
+<input type="text" id="inputTitle" name="inputTitle">
+</br></br>
+<label for="inputAuthor">Author of Book</label></br>
+<input type="text" id="inputAuthor" name="inputAuthor">
+</br></br>
+<p id="error" style="color: red;" ></p>
+
+<button onclick="saveData()">Add</button>
+</br></br>
+
+
+</body>
+</html>
