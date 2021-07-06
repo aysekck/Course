@@ -11,7 +11,7 @@
 
             // Get data from backend.
             $.ajax({
-                url: 'http://localhost:8080/api/courses/all',
+                url: 'http://localhost:8080/course/all',
                 type: 'get',
                 success: function(data) {
                     console.log('data get success');
@@ -23,8 +23,8 @@
 
                     // Loop over data.
                     $.each(data, function(index, value) {
-                        console.log(value.title + ' - ' + value.author);
-                        coursesText = courses + ' ' + value.title + ' - ' + value.author + '. ';
+                        console.log(value.courseID + ' - ' + value.courseInstructor + '-' + value.courseName);
+                        coursesText += 'courses' + ' ' + value.courseInstructor + ' - ' + value.courseName + '. ';
                     });
 
                     $('#courses').text(coursesText);
@@ -46,19 +46,19 @@
             else {
                 $("#error").text("");
 
-                var titleFromInput = $("#inputTitle").val();
-                var authorFromInput = $("#inputAuthor").val();
-                console.log('Title ingevoerd: ' + titleFromInput);
-                console.log('Author ingevoerd: ' + authorFromInput);
+                var courseName = $("#inputTitle").val();
+                var courseInstructor = $("#inputAuthor").val();
+
 
                 // JavaScript/JQuery data to JSON.
 
                 // JavaScript variables to JavaScript Object.
                 var courses = {
-                    title : titleFromInput,
-                    author : authorFromInput
+                    courseName: courseName,
+                    courseInstructor : courseInstructor,
+
                 };
-                console.log(book);
+                console.log(courses);
 
                 // JavaScript Object to JSON String.
                 var coursesJson = JSON.stringify(courses);
@@ -66,8 +66,8 @@
 
                 // Do POST request with body.
                 $.ajax({
-                    url: 'http://localhost:8080/api/books/new',
-                    type: 'put',
+                    url: 'http://localhost:8080/course/new',
+                    type: 'post',
                     data: coursesJson,
                     contentType: "application/json",
                     success: function(data) {
@@ -143,7 +143,7 @@ tr:nth-child(even) {
 
 <button onclick="postData()">Add</button>
 </br></br>
-
+<p id="courses"></p>
 
 </body>
 </html>
